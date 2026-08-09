@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>장미와 어린왕자</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #eee6d8;
+    color: #4d4038;
+    font-family: 'Noto Serif KR', serif;
+    overflow: hidden;
+}
+
+/* =========================
+   전체 화면
+========================= */
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+/* =========================
+   시작 화면
+========================= */
+
+.cover {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 40%, #fffaf0 0%, #f5ead9 45%, #e7d7c0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    z-index: 10;
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.cover.hide {
+    opacity: 0;
+    transform: scale(1.05);
+    pointer-events: none;
+}
+
+.cover-small {
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin-bottom: 25px;
+    color: #8c7667;
+}
+
+.cover h1 {
+    font-size: clamp(34px, 8vw, 64px);
+    font-weight: 500;
+    letter-spacing: 5px;
+    margin-bottom: 12px;
+}
+
+.cover-sub {
+    font-size: 15px;
+    color: #8a776a;
+    margin-bottom: 50px;
+}
+
+.rose {
+    position: relative;
+    width: 80px;
+    height: 105px;
+    margin-bottom: 40px;
+}
+
+.rose-flower {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 35%, #f7a3a0, #b95758 65%, #863c40);
+    top: 0;
+    left: 16px;
+    box-shadow:
+        0 0 30px rgba(177, 80, 80, .18);
+}
+
+.rose-flower::before,
+.rose-flower::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: #cf6d6d;
+}
+
+.rose-flower::before {
+    width: 35px;
+    height: 35px;
+    left: -10px;
+    top: 10px;
+}
+
+.rose-flower::after {
+    width: 35px;
+    height: 35px;
+    right: -10px;
+    top: 8px;
+}
+
+.rose-stem {
+    position: absolute;
+    width: 3px;
+    height: 62px;
+    background: #71805b;
+    left: 39px;
+    top: 42px;
+}
+
+.rose-leaf {
+    position: absolute;
+    width: 28px;
+    height: 14px;
+    background: #71805b;
+    border-radius: 100% 0;
+    top: 70px;
+    left: 40px;
+    transform: rotate(-20deg);
+}
+
+.start-button {
+    border: 1px solid #8f796b;
+    background: rgba(255,255,255,.25);
+    padding: 14px 36px;
+    border-radius: 30px;
+    color: #57473e;
+    font-family: inherit;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.start-button:hover {
+    background: #fffaf1;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   책
+========================= */
+
+.book {
+    width: min(94vw, 1050px);
+    height: min(90vh, 760px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    
+    background: #fbf6eb;
+    box-shadow:
+        0 25px 70px rgba(76, 57, 43, .18),
+        0 4px 15px rgba(76, 57, 43, .08);
+
+    border-radius: 4px;
+    overflow: hidden;
+    
+    opacity: 0;
+    transform-origin: center;
+    transition: opacity .8s ease;
+}
+
+.book.show {
+    opacity: 1;
+}
+
+.book::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.6), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(218,196,170,.13), transparent 30%);
+}
+
+/* =========================
+   페이지
+========================= */
+
+.page {
+    position: absolute;
+    inset: 0;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    z-index: 2;
+}
+
+.page.active {
+    display: grid;
+    animation: pageIn .7s ease;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateX(35px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 이미지 */
+
+.image-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px;
+    position: relative;
+}
+
+.image-area img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 20px rgba(77, 58, 44, .10));
+}
+
+/* 글 */
+
+.text-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 45px 55px;
+    border-left: 1px solid rgba(121, 99, 80, .14);
+}
+
+.scene-number {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #a68b78;
+    margin-bottom: 18px;
+}
+
+.text-area h2 {
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 500;
+    margin-bottom: 28px;
+    color: #57463d;
+}
+
+.text-area p {
+    font-size: clamp(13px, 1.5vw, 16px);
+    line-height: 2.05;
+    color: #68594f;
+}
+
+.quote {
+    margin-top: 25px;
+    padding-left: 18px;
+    border-left: 2px solid #b76b68;
+    font-size: 16px !important;
+    line-height: 1.9 !important;
+    color: #7a514f !important;
+}
+
+/* =========================
+   첫 번째 텍스트 페이지
+========================= */
+
+.intro {
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+.intro .text-area {
+    border: none;
+    padding: 50px;
+    align-items: center;
+}
+
+.intro h2 {
+    font-size: clamp(27px, 4vw, 42px);
+}
+
+.intro p {
+    max-width: 680px;
+}
+
+/* =========================
+   마지막 페이지
+========================= */
+
+.ending {
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+.ending .text-area {
+    border: none;
+    align-items: center;
+}
+
+.ending h2 {
+    font-size: clamp(25px, 4vw, 40px);
+}
+
+.ending p {
+    max-width: 620px;
+}
+
+.travel-button {
+    margin-top: 38px;
+    border: none;
+    background: #a65b5b;
+    color: white;
+    font-family: inherit;
+    padding: 15px 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.travel-button:hover {
+    background: #874848;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   하단 네비게이션
+========================= */
+
+.navigation {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    z-index: 20;
+}
+
+.nav-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid rgba(104, 80, 64, .35);
+    background: rgba(255,255,255,.65);
+    color: #665249;
+    cursor: pointer;
+    font-family: inherit;
+    transition: .25s;
+}
+
+.nav-button:hover {
+    background: #fffaf1;
+    transform: translateY(-2px);
+}
+
+.page-count {
+    font-size: 12px;
+    color: #90796b;
+    min-width: 50px;
+    text-align: center;
+}
+
+/* =========================
+   모바일
+========================= */
+
+@media (max-width: 700px) {
+
+    .book {
+        width: 94vw;
+        height: 88vh;
+    }
+
+    .page {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+    }
+
+    .image-area {
+        height: 43%;
+        padding: 20px 25px 5px;
+    }
+
+    .image-area img {
+        max-height: 100%;
+    }
+
+    .text-area {
+        border-left: none;
+        border-top: 1px solid rgba(121, 99, 80, .14);
+        padding: 22px 27px 65px;
+        justify-content: flex-start;
+    }
+
+    .scene-number {
+        margin-bottom: 10px;
+    }
+
+    .text-area h2 {
+        margin-bottom: 14px;
+    }
+
+    .text-area p {
+        font-size: 13px;
+        line-height: 1.85;
+    }
+
+    .quote {
+        font-size: 13px !important;
+    }
+
+    .intro .text-area {
+        justify-content: center;
+        padding: 30px;
+    }
+
+    .ending .text-area {
+        justify-content: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- =====================
+         표지
+    ====================== -->
+
+    <section class="cover" id="cover">
+
+        <div class="cover-small">
+            THE LITTLE PRINCE
+        </div>
+
+        <div class="rose">
+            <div class="rose-flower"></div>
+            <div class="rose-stem"></div>
+            <div class="rose-leaf"></div>
+        </div>
+
+        <h1>장미와 어린왕자</h1>
+
+        <div class="cover-sub">
+            한 송이의 장미를 특별하게 만든 이야기
+        </div>
+
+        <button class="start-button" onclick="startStory()">
+            이야기를 펼쳐보기
+        </button>
+
+    </section>
+
+
+    <!-- =====================
+         책
+    ====================== -->
+
+    <main class="book" id="book">
+
+
+        <!-- 0. INTRO -->
+
+        <section class="page active intro">
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 01
+                </div>
+
+                <h2>장미는 어린왕자에게<br>가장 소중한 존재였습니다.</h2>
+
+                <p>
+                    아름답고 사랑스러웠지만,<br>
+                    장미는 조금 까다롭고 솔직하지 못한 꽃이었습니다.
+                </p>
+
+                <p class="quote">
+                    “찬바람은 싫으니 유리 덮개를 씌워줘.”<br>
+                    “목이 마르니 물을 가져다줘.”
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 1. 장미 등장 -->
+
+        <section class="page">
+
+            <div class="image-area">
+                <img src="장미다루기4.png" alt="장미와 어린왕자">
+            </div>
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 02
+                </div>
+
+                <h2>정말 아름다우시군요.</h2>
+
+                <p>
+                    “정말 아름다우시군요!”
+                    <br><br>
+                    “그렇죠?” 꽃이 새침하게 대답했다.
+                    <br>
+                    “저는 태양과 함께 태어났답니다…”
+                    <br><br>
+                    어린왕자는 장미가 그다지 겸손하지 않다는 것을 알아챘다.
+                    하지만 그 자태는 너무나 감동적이었다!
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 2. 물 -->
+
+        <section class="page">
+
+            <div class="image-area">
+                <img src="장미다루기1.png" alt="장미에게 물을 주는 어린왕자">
+            </div>
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 03
+                </div>
+
+                <h2>아침 식사 시간이 된 것 같아요.</h2>
+
+                <p>
+                    “아침 식사 시간이 된 것 같은데요.”
+                    장미가 덧붙였다.
+                    <br><br>
+                    “제 생각을 어떻게 해주지 않으시겠어요….”
+                    <br><br>
+                    당황한 어린왕자는 신선한 물이 담긴
+                    물뿌리개를 찾아와 물을 주었다.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 3. 바람 -->
+
+        <section class="page">
+
+            <div class="image-area">
+                <img src="장미다루기2.png" alt="바람을 걱정하는 장미">
+            </div>
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 04
+                </div>
+
+                <h2>바람이 부는 건 질색이에요.</h2>
+
+                <p>
+                    “바람이 부는 건 질색이에요.
+                    혹시 바람을 막아 줄 만한 것이 없나요?”
+                    <br><br>
+                    ‘바람이 질색이라니… 식물 치고는 운이 나쁘군.’
+                    어린왕자는 생각했다.
+                    <br><br>
+                    ‘정말 까다로운 꽃이야…’
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 4. 유리 덮개 -->
+
+        <section class="page">
+
+            <div class="image-area">
+                <img src="장미다루기3.png" alt="유리 덮개를 원하는 장미">
+            </div>
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 05
+                </div>
+
+                <h2>유리 덮개는요?</h2>
+
+                <p>
+                    “저녁에는 유리 덮개를 덮어주세요.
+                    이곳은 너무 춥군요. 설비가 엉망이에요.
+                    내가 살던 곳에서는…”
+                    <br><br>
+                    장미는 말을 멈췄다.
+                    씨앗 형태로 왔으니 다른 세상에 대해 알 리가 없었다.
+                </p>
+
+                <p class="quote">
+                    빤히 들여다보이는 거짓말을 하려다가
+                    무안해진 꽃은 어린왕자가 죄책감을 느끼도록
+                    기침을 두세 번 해댔다.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 5. 떠남 -->
+
+        <section class="page">
+
+            <div class="text-area" style="grid-column:1 / -1;">
+
+                <div class="scene-number">
+                    ROSE · 06
+                </div>
+
+                <h2>서로를 사랑했지만,<br>서로를 이해하기에는 아직 미숙했습니다.</h2>
+
+                <p style="max-width:650px;">
+                    어린왕자는 장미를 아끼는 마음으로 정성을 다해 돌보았습니다.
+                    신선한 물을 주고, 찬 바람을 막아 주고,
+                    나비가 될 벌레 조금을 제외한 벌레를 잡아 주며
+                    하루하루 함께 시간을 보냈습니다.
+                    <br><br>
+                    하지만 어린왕자는 장미의 작은 거짓말과
+                    변덕스러운 말에 점점 지쳐 갔고,
+                    장미 역시 자신의 마음을 서툴게만 표현할 뿐이었습니다.
+                    <br><br>
+                    결국 어린왕자는 장미를 떠나,
+                    자신의 별을 벗어나는 여행을 시작합니다.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 6. 마지막 질문 -->
+
+        <section class="page ending">
+
+            <div class="text-area">
+
+                <div class="scene-number">
+                    ROSE · 07
+                </div>
+
+                <h2>
+                    수많은 장미 중에서<br>
+                    왜 자신의 장미가 가장 소중했을까요?
+                </h2>
+
+                <p>
+                    여행을 떠난 어린왕자는<br>
+                    이후 아주 수많은 장미를 만나게 됩니다.
+                    <br><br>
+                    그럼에도 끝까지 자신의 장미를
+                    가장 소중하게 생각했던 이유는 무엇이었을까요?
+                    <br><br>
+                    그 답을 찾기 위해,<br>
+                    이제 어린왕자와 함께 첫 번째 행성으로 떠나 보세요.
+                </p>
+
+                <button class="travel-button"
+                        onclick="location.href='first-planet.html'">
+                    첫 번째 행성으로 떠나기 →
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- 네비게이션 -->
+
+        <div class="navigation">
+
+            <button class="nav-button" onclick="prevPage()">
+                ←
+            </button>
+
+            <div class="page-count" id="pageCount">
+                1 / 7
+            </div>
+
+            <button class="nav-button" onclick="nextPage()">
+                →
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+let currentPage = 0;
+
+const pages = document.querySelectorAll('.page');
+const pageCount = document.getElementById('pageCount');
+const book = document.getElementById('book');
+const cover = document.getElementById('cover');
+
+function startStory() {
+
+    cover.classList.add('hide');
+
+    setTimeout(() => {
+        book.classList.add('show');
+    }, 500);
+
+}
+
+function showPage(index) {
+
+    if (index < 0) {
+        index = 0;
+    }
+
+    if (index >= pages.length) {
+        index = pages.length - 1;
+    }
+
+    pages.forEach((page, i) => {
+
+        page.classList.remove('active');
+
+        if (i === index) {
+            page.classList.add('active');
+        }
+
+    });
+
+    currentPage = index;
+
+    pageCount.textContent =
+        `${currentPage + 1} / ${pages.length}`;
+
+}
+
+function nextPage() {
+
+    if (currentPage < pages.length - 1) {
+        showPage(currentPage + 1);
+    }
+
+}
+
+function prevPage() {
+
+    if (currentPage > 0) {
+        showPage(currentPage - 1);
+    }
+
+}
+
+
+/* 화면 좌우 터치 */
+
+let startX = 0;
+
+document.addEventListener('touchstart', e => {
+
+    startX = e.touches[0].clientX;
+
+});
+
+document.addEventListener('touchend', e => {
+
+    const endX = e.changedTouches[0].clientX;
+
+    const difference = endX - startX;
+
+    if (Math.abs(difference) < 50) {
+        return;
+    }
+
+    if (difference < 0) {
+        nextPage();
+    } else {
+        prevPage();
+    }
+
+});
+
+
+/* 키보드 */
+
+document.addEventListener('keydown', e => {
+
+    if (e.key === 'ArrowRight') {
+        nextPage();
+    }
+
+    if (e.key === 'ArrowLeft') {
+        prevPage();
+    }
+
+});
+
+</script>
+
+</body>
+</html>
