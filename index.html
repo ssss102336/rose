@@ -165,7 +165,7 @@ body {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    
+
     background: #fbf6eb;
     box-shadow:
         0 25px 70px rgba(76, 57, 43, .18),
@@ -173,7 +173,7 @@ body {
 
     border-radius: 4px;
     overflow: hidden;
-    
+
     opacity: 0;
     transform-origin: center;
     transition: opacity .8s ease;
@@ -194,7 +194,7 @@ body {
 }
 
 /* =========================
-   페이지
+   장미 페이지
 ========================= */
 
 .page {
@@ -222,7 +222,9 @@ body {
     }
 }
 
-/* 이미지 */
+/* =========================
+   이미지
+========================= */
 
 .image-area {
     display: flex;
@@ -239,7 +241,9 @@ body {
     filter: drop-shadow(0 12px 20px rgba(77, 58, 44, .10));
 }
 
-/* 글 */
+/* =========================
+   글
+========================= */
 
 .text-area {
     display: flex;
@@ -323,6 +327,10 @@ body {
     max-width: 620px;
 }
 
+/* =========================
+   행성으로 떠나기 버튼
+========================= */
+
 .travel-button {
     margin-top: 38px;
     border: none;
@@ -338,6 +346,94 @@ body {
 .travel-button:hover {
     background: #874848;
     transform: translateY(-2px);
+}
+
+/* =========================
+   3층 안내 화면
+   ※ .page가 아님
+   ※ 8페이지 카운트에 포함되지 않음
+========================= */
+
+.third-floor-guide {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            #fffaf0 0%,
+            #f5ead9 50%,
+            #e7d7c0 100%
+        );
+
+    opacity: 0;
+}
+
+.third-floor-guide.show {
+    display: flex;
+    animation: guideIn .8s ease forwards;
+}
+
+@keyframes guideIn {
+    from {
+        opacity: 0;
+        transform: scale(1.02);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.guide-inner {
+    width: min(88vw, 700px);
+    padding: 40px 30px;
+}
+
+.guide-small {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #a68b78;
+    margin-bottom: 28px;
+}
+
+.guide-inner h2 {
+    font-size: clamp(27px, 5vw, 44px);
+    font-weight: 500;
+    line-height: 1.55;
+    color: #57463d;
+    margin-bottom: 35px;
+}
+
+.guide-inner p {
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 2;
+    color: #68594f;
+}
+
+.guide-inner strong {
+    color: #a65b5b;
+    font-weight: 600;
+}
+
+.guide-line {
+    width: 45px;
+    height: 1px;
+    background: #b9a08c;
+    margin: 35px auto;
+}
+
+.guide-sub {
+    font-size: 13px !important;
+    color: #90796b !important;
 }
 
 /* =========================
@@ -436,6 +532,20 @@ body {
     .ending .text-area {
         justify-content: center;
     }
+
+    .guide-inner {
+        padding: 35px 25px;
+    }
+
+    .guide-inner h2 {
+        font-size: 27px;
+        line-height: 1.55;
+    }
+
+    .guide-inner p {
+        font-size: 14px;
+        line-height: 1.9;
+    }
 }
 </style>
 </head>
@@ -478,7 +588,6 @@ body {
     ====================== -->
 
     <main class="book" id="book">
-
 
         <!-- 0. INTRO -->
 
@@ -636,46 +745,8 @@ body {
 
         </section>
 
-             <!-- 5. 마지막 인사 -->
 
-<section class="page">
-
-    <div class="text-area" style="grid-column:1 / -1;">
-
-        <div class="scene-number">
-            ROSE · 06
-        </div>
-
-        <h2>
-            “떠나기로 결심했으면<br>
-            어서 가.”
-        </h2>
-
-        <p style="max-width:650px;">
-
-            🌹 “우물쭈물하지 마, 신경 쓰여.
-            떠나기로 결심했으면 어서 가.”
-
-            <br><br>
-
-            꽃은 우는 모습을 보이고 싶지 않았던 것이다.
-            그토록 자존심 강한 꽃이었다.
-
-            <br><br>
-
-            어린왕자는
-            ‘이대로 별을 떠나면, 다시 돌아오지 못할지도 모른다.’
-            라는 생각을 하며,
-            장미와 인사를 나누었습니다.
-
-        </p>
-
-    </div>
-
-</section>
-
-
-        <!-- 5. 떠남 -->
+        <!-- 5. 마지막 인사 -->
 
         <section class="page">
 
@@ -685,7 +756,49 @@ body {
                     ROSE · 06
                 </div>
 
-                <h2>서로를 사랑했지만,<br>서로를 이해하기에는 아직 미숙했습니다.</h2>
+                <h2>
+                    “떠나기로 결심했으면<br>
+                    어서 가.”
+                </h2>
+
+                <p style="max-width:650px;">
+
+                    🌹 “우물쭈물하지 마, 신경 쓰여.
+                    떠나기로 결심했으면 어서 가.”
+
+                    <br><br>
+
+                    꽃은 우는 모습을 보이고 싶지 않았던 것이다.
+                    그토록 자존심 강한 꽃이었다.
+
+                    <br><br>
+
+                    어린왕자는
+                    ‘이대로 별을 떠나면, 다시 돌아오지 못할지도 모른다.’
+                    라는 생각을 하며,
+                    장미와 인사를 나누었습니다.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- 6. 떠남 -->
+
+        <section class="page">
+
+            <div class="text-area" style="grid-column:1 / -1;">
+
+                <div class="scene-number">
+                    ROSE · 07
+                </div>
+
+                <h2>
+                    서로를 사랑했지만,<br>
+                    서로를 이해하기에는 아직 미숙했습니다.
+                </h2>
 
                 <p style="max-width:650px;">
                     어린왕자는 장미를 아끼는 마음으로 정성을 다해 돌보았습니다.
@@ -706,7 +819,7 @@ body {
         </section>
 
 
-        <!-- 6. 마지막 질문 -->
+        <!-- 7. 마지막 질문 -->
 
         <section class="page ending">
 
@@ -731,17 +844,67 @@ body {
                     그 답을 찾기 위해,<br>
                     이제 어린왕자와 함께 첫 번째 행성으로 떠나 보세요.
                 </p>
-<button onclick="window.location.href='https://ssss102336.github.io/planet/'">
-    행성으로 떠나기
-</button>
+
+                <button
+                    class="travel-button"
+                    onclick="showThirdFloorGuide()">
+                    행성으로 떠나기
+                </button>
+
             </div>
 
         </section>
 
 
-        <!-- 네비게이션 -->
+        <!-- =====================
+             3층 안내 화면
+             ※ .page가 아님
+             ※ 8페이지 카운트에 포함되지 않음
+        ====================== -->
 
-        <div class="navigation">
+        <section class="third-floor-guide" id="thirdFloorGuide">
+
+            <div class="guide-inner">
+
+                <div class="guide-small">
+                    THE NEXT JOURNEY
+                </div>
+
+                <h1>
+                    어린왕자의 다음 여행을<br>
+                    따라가보세요.
+                </h1><br>
+
+                <p>
+                    장미를 뒤로하고 떠난 어린왕자는<br>
+                    여러 행성을 여행하게 됩니다.
+                    <br><br>
+            
+
+                    이제 어린왕자가 만난 행성을 따라<br>
+                    <strong>3층으로 올라가 보세요.</strong><br>
+                     3층에서 QR을 찾아<br>
+                    스캔해 보세요.
+
+                </p>
+
+                <div class="guide-line"></div>
+
+                <p class="guide-sub">
+                    3층에 도착하면<br>
+                    새로운 여행이 여러분을 기다리고 있습니다.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================
+             네비게이션
+        ====================== -->
+
+        <div class="navigation" id="navigation">
 
             <button class="nav-button" onclick="prevPage()">
                 ←
@@ -766,10 +929,19 @@ body {
 
 let currentPage = 0;
 
+/* .page만 가져오기 때문에 총 8페이지 */
 const pages = document.querySelectorAll('.page');
+
 const pageCount = document.getElementById('pageCount');
 const book = document.getElementById('book');
 const cover = document.getElementById('cover');
+const navigation = document.getElementById('navigation');
+const thirdFloorGuide = document.getElementById('thirdFloorGuide');
+
+
+/* =========================
+   이야기 시작
+========================= */
 
 function startStory() {
 
@@ -780,6 +952,11 @@ function startStory() {
     }, 500);
 
 }
+
+
+/* =========================
+   페이지 이동
+========================= */
 
 function showPage(index) {
 
@@ -803,10 +980,31 @@ function showPage(index) {
 
     currentPage = index;
 
+    /* 항상 8페이지 기준 */
     pageCount.textContent =
         `${currentPage + 1} / ${pages.length}`;
 
 }
+
+
+/* =========================
+   행성으로 떠나기
+========================= */
+
+function showThirdFloorGuide() {
+
+    /* 마지막 장미 페이지 상태에서 안내 화면을 띄움 */
+    thirdFloorGuide.classList.add('show');
+
+    /* 안내 화면에서는 하단 네비게이션 숨김 */
+    navigation.style.display = 'none';
+
+}
+
+
+/* =========================
+   다음 페이지
+========================= */
 
 function nextPage() {
 
@@ -815,6 +1013,11 @@ function nextPage() {
     }
 
 }
+
+
+/* =========================
+   이전 페이지
+========================= */
 
 function prevPage() {
 
@@ -825,17 +1028,28 @@ function prevPage() {
 }
 
 
-/* 화면 좌우 터치 */
+/* =========================
+   화면 좌우 터치
+   안내 화면에서는 작동하지 않게 함
+========================= */
 
 let startX = 0;
 
 document.addEventListener('touchstart', e => {
+
+    if (thirdFloorGuide.classList.contains('show')) {
+        return;
+    }
 
     startX = e.touches[0].clientX;
 
 });
 
 document.addEventListener('touchend', e => {
+
+    if (thirdFloorGuide.classList.contains('show')) {
+        return;
+    }
 
     const endX = e.changedTouches[0].clientX;
 
@@ -854,9 +1068,16 @@ document.addEventListener('touchend', e => {
 });
 
 
-/* 키보드 */
+/* =========================
+   키보드
+   안내 화면에서는 작동하지 않게 함
+========================= */
 
 document.addEventListener('keydown', e => {
+
+    if (thirdFloorGuide.classList.contains('show')) {
+        return;
+    }
 
     if (e.key === 'ArrowRight') {
         nextPage();
